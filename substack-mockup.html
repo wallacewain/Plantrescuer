@@ -6,27 +6,29 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; }
 
-/* Dark by design: one committed palette, no light variant. Every colour is
-   painted explicitly so the page holds whatever ground the host puts behind it. */
+/* Light by design: one committed palette, no dark variant, so the page reads
+   the same whatever the viewer's system theme is set to. color-scheme keeps
+   the browser from auto-darkening form controls on a dark-mode device. */
 :root {
-  --paper:#0D1310;
-  --surface:#141B16;
-  --surface-2:#1C2620;
-  --ink:#E9EFE8;
-  --ink-2:#A9B8AE;
-  --ink-3:#7A8A80;
-  --rule:#26312A;
-  --rule-soft:#1E2721;
-  --accent:#7FC79A;
-  --accent-hover:#96D6AC;
-  --accent-ink:#0B120E;
-  --accent-soft:#1D2E24;
-  --clay:#E0996E;
-  --clay-soft:#2E211A;
-  --tile-a:#1D2A22; --tile-b:#222B1D; --tile-c:#1A2A27; --tile-d:#2A2419;
-  --leaf-a:#79B78C; --leaf-b:#96BC79; --leaf-c:#67A99B; --leaf-d:#C0A26A;
-  --shadow: 0 1px 2px rgba(0,0,0,.55), 0 22px 50px -20px rgba(0,0,0,.8);
-  --shadow-sm: 0 1px 2px rgba(0,0,0,.45), 0 8px 20px -12px rgba(0,0,0,.7);
+  color-scheme: light;
+  --paper:#FDFDFB;
+  --surface:#FFFFFF;
+  --surface-2:#F3F6F1;
+  --ink:#14201A;
+  --ink-2:#4A5A51;
+  --ink-3:#7C8A82;
+  --rule:#E2E7E0;
+  --rule-soft:#EDF1EB;
+  --accent:#2F6B4F;
+  --accent-hover:#255840;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#E6F0E9;
+  --clay:#A9552A;
+  --clay-soft:#F6E9E1;
+  --tile-a:#DCE8DC; --tile-b:#E7EDE0; --tile-c:#DDE9E6; --tile-d:#EBE6DA;
+  --leaf-a:#4F8A63; --leaf-b:#6D9A57; --leaf-c:#3E7F72; --leaf-d:#A0854B;
+  --shadow: 0 1px 2px rgba(20,32,26,.06), 0 18px 44px -18px rgba(20,32,26,.22);
+  --shadow-sm: 0 1px 2px rgba(20,32,26,.05), 0 6px 16px -10px rgba(20,32,26,.2);
 
   --display: "Fraunces", "Iowan Old Style", Georgia, serif;
   --body: "Newsreader", "Iowan Old Style", Georgia, serif;

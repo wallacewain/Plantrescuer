@@ -2,8 +2,10 @@
 
 A visual mock-up of a Substack publication for [@theplantrescuer](https://instagram.com/theplantrescuer).
 
-Dark by design — one committed palette rather than a light and dark pair, so
-every reader sees the same thing regardless of their system theme.
+Light by design — one committed palette rather than a light and dark pair, so
+every reader sees the same thing regardless of their system theme. `:root`
+sets `color-scheme: light` to stop browsers auto-darkening form controls on
+dark-mode devices.
 
 `substack-mockup.html` holds three switchable views inside a browser frame:
 
