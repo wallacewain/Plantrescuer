@@ -2,6 +2,9 @@
 
 A visual mock-up of a Substack publication for [@theplantrescuer](https://instagram.com/theplantrescuer).
 
+Dark by design — one committed palette rather than a light and dark pair, so
+every reader sees the same thing regardless of their system theme.
+
 `substack-mockup.html` holds three switchable views inside a browser frame:
 
 - **Publication page** — masthead, subscribe box, post feed, paid tiers, about

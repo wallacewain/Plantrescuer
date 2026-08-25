@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="A Substack mock-up for The Plant Rescuer: the publication page, a post, and how it lands in a subscriber&#39;s inbox.">
-<meta name="theme-color" content="#2F6B4F" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0F1512" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0D1310">
+<meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
 <meta property="og:title" content="The Plant Rescuer">
 <meta property="og:description" content="A Substack mock-up: publication page, a post, and the email.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><circle cx=%2232%22 cy=%2232%22 r=%2232%22 fill=%22%23E6F0E9%22/><path d=%22M32 54V30%22 stroke=%22%232F6B4F%22 stroke-width=%223%22 stroke-linecap=%22round%22/><path d=%22M32 36c-8 0-14-6-14-14 8 0 14 6 14 14Z%22 fill=%22%232F6B4F%22/><path d=%22M32 42c8 0 14-6 14-14-8 0-14 6-14 14Z%22 fill=%22%232F6B4F%22/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><circle cx=%2232%22 cy=%2232%22 r=%2232%22 fill=%22%231D2E24%22/><path d=%22M32 54V30%22 stroke=%22%237FC79A%22 stroke-width=%223%22 stroke-linecap=%22round%22/><path d=%22M32 36c-8 0-14-6-14-14 8 0 14 6 14 14Z%22 fill=%22%237FC79A%22/><path d=%22M32 42c8 0 14-6 14-14-8 0-14 6-14 14Z%22 fill=%22%237FC79A%22/></svg>">
 <title>The Plant Rescuer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,73 +20,31 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; }
 
+/* Dark by design: one committed palette, no light variant. Every colour is
+   painted explicitly so the page holds whatever ground the host puts behind it. */
 :root {
-  --paper:#FDFDFB;
-  --surface:#FFFFFF;
-  --surface-2:#F3F6F1;
-  --ink:#14201A;
-  --ink-2:#4A5A51;
-  --ink-3:#7C8A82;
-  --rule:#E2E7E0;
-  --rule-soft:#EDF1EB;
-  --accent:#2F6B4F;
-  --accent-hover:#255840;
-  --accent-ink:#FFFFFF;
-  --accent-soft:#E6F0E9;
-  --clay:#A9552A;
-  --clay-soft:#F6E9E1;
-  --tile-a:#DCE8DC; --tile-b:#E7EDE0; --tile-c:#DDE9E6; --tile-d:#EBE6DA;
-  --leaf-a:#4F8A63; --leaf-b:#6D9A57; --leaf-c:#3E7F72; --leaf-d:#A0854B;
-  --shadow: 0 1px 2px rgba(20,32,26,.06), 0 18px 44px -18px rgba(20,32,26,.22);
-  --shadow-sm: 0 1px 2px rgba(20,32,26,.05), 0 6px 16px -10px rgba(20,32,26,.2);
+  --paper:#0D1310;
+  --surface:#141B16;
+  --surface-2:#1C2620;
+  --ink:#E9EFE8;
+  --ink-2:#A9B8AE;
+  --ink-3:#7A8A80;
+  --rule:#26312A;
+  --rule-soft:#1E2721;
+  --accent:#7FC79A;
+  --accent-hover:#96D6AC;
+  --accent-ink:#0B120E;
+  --accent-soft:#1D2E24;
+  --clay:#E0996E;
+  --clay-soft:#2E211A;
+  --tile-a:#1D2A22; --tile-b:#222B1D; --tile-c:#1A2A27; --tile-d:#2A2419;
+  --leaf-a:#79B78C; --leaf-b:#96BC79; --leaf-c:#67A99B; --leaf-d:#C0A26A;
+  --shadow: 0 1px 2px rgba(0,0,0,.55), 0 22px 50px -20px rgba(0,0,0,.8);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.45), 0 8px 20px -12px rgba(0,0,0,.7);
 
   --display: "Fraunces", "Iowan Old Style", Georgia, serif;
   --body: "Newsreader", "Iowan Old Style", Georgia, serif;
   --ui: "Archivo", "Helvetica Neue", Arial, sans-serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper:#0F1512;
-    --surface:#161D18;
-    --surface-2:#1C241E;
-    --ink:#E7EDE6;
-    --ink-2:#A7B5AB;
-    --ink-3:#7C8B81;
-    --rule:#28322B;
-    --rule-soft:#212A24;
-    --accent:#7FC195;
-    --accent-hover:#95CFA7;
-    --accent-ink:#0F1512;
-    --accent-soft:#1E2C24;
-    --clay:#DB9068;
-    --clay-soft:#2A2019;
-    --tile-a:#1F2A22; --tile-b:#242B1E; --tile-c:#1C2A27; --tile-d:#28241A;
-    --leaf-a:#6FA980; --leaf-b:#8AB06F; --leaf-c:#5C9A8D; --leaf-d:#B79A62;
-    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 18px 44px -18px rgba(0,0,0,.75);
-    --shadow-sm: 0 1px 2px rgba(0,0,0,.4), 0 6px 16px -10px rgba(0,0,0,.6);
-  }
-}
-
-:root[data-theme="dark"] {
-  --paper:#0F1512;
-  --surface:#161D18;
-  --surface-2:#1C241E;
-  --ink:#E7EDE6;
-  --ink-2:#A7B5AB;
-  --ink-3:#7C8B81;
-  --rule:#28322B;
-  --rule-soft:#212A24;
-  --accent:#7FC195;
-  --accent-hover:#95CFA7;
-  --accent-ink:#0F1512;
-  --accent-soft:#1E2C24;
-  --clay:#DB9068;
-  --clay-soft:#2A2019;
-  --tile-a:#1F2A22; --tile-b:#242B1E; --tile-c:#1C2A27; --tile-d:#28241A;
-  --leaf-a:#6FA980; --leaf-b:#8AB06F; --leaf-c:#5C9A8D; --leaf-d:#B79A62;
-  --shadow: 0 1px 2px rgba(0,0,0,.5), 0 18px 44px -18px rgba(0,0,0,.75);
-  --shadow-sm: 0 1px 2px rgba(0,0,0,.4), 0 6px 16px -10px rgba(0,0,0,.6);
 }
 
 body {
