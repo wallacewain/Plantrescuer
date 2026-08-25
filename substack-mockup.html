@@ -1,0 +1,952 @@
+<title>The Plant Rescuer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --paper:#FDFDFB;
+  --surface:#FFFFFF;
+  --surface-2:#F3F6F1;
+  --ink:#14201A;
+  --ink-2:#4A5A51;
+  --ink-3:#7C8A82;
+  --rule:#E2E7E0;
+  --rule-soft:#EDF1EB;
+  --accent:#2F6B4F;
+  --accent-hover:#255840;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#E6F0E9;
+  --clay:#A9552A;
+  --clay-soft:#F6E9E1;
+  --tile-a:#DCE8DC; --tile-b:#E7EDE0; --tile-c:#DDE9E6; --tile-d:#EBE6DA;
+  --leaf-a:#4F8A63; --leaf-b:#6D9A57; --leaf-c:#3E7F72; --leaf-d:#A0854B;
+  --shadow: 0 1px 2px rgba(20,32,26,.06), 0 18px 44px -18px rgba(20,32,26,.22);
+  --shadow-sm: 0 1px 2px rgba(20,32,26,.05), 0 6px 16px -10px rgba(20,32,26,.2);
+
+  --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --body: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --ui: "Archivo", "Helvetica Neue", Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#0F1512;
+    --surface:#161D18;
+    --surface-2:#1C241E;
+    --ink:#E7EDE6;
+    --ink-2:#A7B5AB;
+    --ink-3:#7C8B81;
+    --rule:#28322B;
+    --rule-soft:#212A24;
+    --accent:#7FC195;
+    --accent-hover:#95CFA7;
+    --accent-ink:#0F1512;
+    --accent-soft:#1E2C24;
+    --clay:#DB9068;
+    --clay-soft:#2A2019;
+    --tile-a:#1F2A22; --tile-b:#242B1E; --tile-c:#1C2A27; --tile-d:#28241A;
+    --leaf-a:#6FA980; --leaf-b:#8AB06F; --leaf-c:#5C9A8D; --leaf-d:#B79A62;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 18px 44px -18px rgba(0,0,0,.75);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.4), 0 6px 16px -10px rgba(0,0,0,.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper:#0F1512;
+  --surface:#161D18;
+  --surface-2:#1C241E;
+  --ink:#E7EDE6;
+  --ink-2:#A7B5AB;
+  --ink-3:#7C8B81;
+  --rule:#28322B;
+  --rule-soft:#212A24;
+  --accent:#7FC195;
+  --accent-hover:#95CFA7;
+  --accent-ink:#0F1512;
+  --accent-soft:#1E2C24;
+  --clay:#DB9068;
+  --clay-soft:#2A2019;
+  --tile-a:#1F2A22; --tile-b:#242B1E; --tile-c:#1C2A27; --tile-d:#28241A;
+  --leaf-a:#6FA980; --leaf-b:#8AB06F; --leaf-c:#5C9A8D; --leaf-d:#B79A62;
+  --shadow: 0 1px 2px rgba(0,0,0,.5), 0 18px 44px -18px rgba(0,0,0,.75);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4), 0 6px 16px -10px rgba(0,0,0,.6);
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+.page { max-width: 1080px; margin: 0 auto; padding: 56px 24px 96px; }
+
+/* ---------- brief ---------- */
+.brief { display: flex; flex-direction: column; gap: 18px; max-width: 640px; }
+.eyebrow {
+  margin: 0; font-family: var(--ui); font-size: .72rem; font-weight: 600;
+  letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3);
+}
+.brief h1 {
+  margin: 0; font-family: var(--display); font-weight: 600;
+  font-size: clamp(2.1rem, 5vw, 2.9rem); line-height: 1.05;
+  letter-spacing: -.02em; text-wrap: balance;
+}
+.brief .lede { margin: 0; color: var(--ink-2); font-size: 1.075rem; max-width: 58ch; }
+
+.tabs {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+  padding: 5px; border: 1px solid var(--rule); border-radius: 999px;
+  background: var(--surface); width: fit-content; box-shadow: var(--shadow-sm);
+}
+.tab {
+  border: 0; background: transparent; cursor: pointer;
+  font-family: var(--ui); font-size: .82rem; font-weight: 500;
+  padding: 8px 16px; border-radius: 999px; color: var(--ink-2);
+  transition: background .18s ease, color .18s ease;
+}
+.tab:hover { color: var(--ink); background: var(--surface-2); }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+
+/* ---------- browser frame ---------- */
+.viewport {
+  margin-top: 36px; border: 1px solid var(--rule); border-radius: 14px;
+  overflow: hidden; background: var(--surface); box-shadow: var(--shadow);
+}
+.chrome {
+  display: flex; align-items: center; gap: 14px;
+  padding: 11px 16px; border-bottom: 1px solid var(--rule); background: var(--surface-2);
+}
+.dots { display: flex; gap: 6px; flex: none; }
+.dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--rule); display: block; }
+.urlbar {
+  flex: 1; text-align: center; font-family: var(--ui); font-size: .74rem;
+  color: var(--ink-3); background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 999px; padding: 5px 12px; max-width: 340px; margin: 0 auto;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.chrome-spacer { width: 46px; flex: none; }
+
+.screen { display: none; }
+.screen.is-live { display: block; animation: fade .3s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .screen.is-live { animation: none; }
+  * { transition-duration: .01ms !important; }
+}
+
+/* ---------- substack shell ---------- */
+.sub { background: var(--surface); }
+.wrap { max-width: 680px; margin: 0 auto; padding: 0 26px; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; align-items: center; gap: 18px;
+  padding: 12px 26px; border-bottom: 1px solid var(--rule);
+  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(8px);
+}
+.wordmark {
+  display: flex; align-items: center; gap: 9px;
+  font-family: var(--display); font-weight: 600; font-size: 1.02rem;
+  letter-spacing: -.01em; white-space: nowrap;
+}
+.topbar-links {
+  display: flex; gap: 18px; margin-left: auto;
+  font-family: var(--ui); font-size: .82rem; color: var(--ink-2);
+}
+.topbar-links span { cursor: default; }
+.topbar-links span:hover { color: var(--ink); }
+@media (max-width: 720px) { .topbar-links { display: none; } }
+
+.btn {
+  font-family: var(--ui); font-weight: 600; font-size: .82rem;
+  background: var(--accent); color: var(--accent-ink);
+  border: 0; border-radius: 6px; padding: 8px 16px; cursor: pointer;
+  transition: background .18s ease;
+}
+.btn:hover { background: var(--accent-hover); }
+.btn-ghost {
+  background: transparent; color: var(--ink-2);
+  border: 1px solid var(--rule); font-weight: 500;
+}
+.btn-ghost:hover { background: var(--surface-2); color: var(--ink); }
+
+/* ---------- masthead ---------- */
+.masthead { text-align: center; padding: 52px 26px 34px; }
+.mark { display: block; margin: 0 auto 20px; }
+.masthead h2 {
+  margin: 0; font-family: var(--display); font-weight: 600;
+  font-size: clamp(2.3rem, 6.2vw, 3.15rem); line-height: 1.02;
+  letter-spacing: -.025em;
+}
+.tagline {
+  margin: 14px auto 0; max-width: 34ch; font-size: 1.1rem; text-wrap: balance;
+  color: var(--ink-2); font-style: italic; font-weight: 300;
+}
+.mast-meta {
+  margin: 18px 0 0; font-family: var(--ui); font-size: .78rem;
+  color: var(--ink-3); letter-spacing: .02em;
+}
+
+.signup { display: flex; gap: 8px; max-width: 400px; margin: 26px auto 0; }
+.signup input {
+  flex: 1; min-width: 0; font-family: var(--ui); font-size: .88rem;
+  padding: 11px 14px; border: 1px solid var(--rule); border-radius: 6px;
+  background: var(--surface); color: var(--ink);
+}
+.signup input::placeholder { color: var(--ink-3); }
+.signup .btn { padding: 11px 20px; }
+.signup-note {
+  margin: 12px 0 0; font-family: var(--ui); font-size: .76rem; color: var(--ink-3);
+}
+.signup-done {
+  margin: 26px auto 0; max-width: 400px; padding: 14px;
+  background: var(--accent-soft); border-radius: 8px;
+  font-family: var(--ui); font-size: .85rem; color: var(--accent);
+  font-weight: 600;
+}
+
+.subnav {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 24px;
+  padding: 14px 26px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  font-family: var(--ui); font-size: .8rem; color: var(--ink-2);
+}
+.subnav b { font-weight: 600; color: var(--ink); border-bottom: 2px solid var(--accent); padding-bottom: 3px; }
+
+/* ---------- post list ---------- */
+.section-label {
+  font-family: var(--ui); font-size: .7rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3);
+  margin: 0 0 18px;
+}
+.feed { padding: 40px 0 8px; }
+
+.featured { display: block; text-decoration: none; }
+.featured .thumb { width: 100%; aspect-ratio: 16 / 8; border-radius: 8px; }
+.featured h3 {
+  margin: 20px 0 0; font-family: var(--body); font-weight: 500;
+  font-size: 1.85rem; line-height: 1.22; letter-spacing: -.015em; text-wrap: balance;
+}
+.featured p { margin: 10px 0 0; color: var(--ink-2); font-size: 1.02rem; }
+
+.tag {
+  display: inline-block; font-family: var(--ui); font-size: .66rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--clay); background: var(--clay-soft);
+  padding: 4px 9px; border-radius: 4px; margin-bottom: 14px;
+}
+.tag.green { color: var(--accent); background: var(--accent-soft); }
+
+.meta {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+  font-family: var(--ui); font-size: .76rem; color: var(--ink-3); margin-top: 14px;
+}
+.meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-3); }
+
+.rule { height: 1px; background: var(--rule-soft); margin: 34px 0; border: 0; }
+
+.post-row {
+  display: grid; grid-template-columns: 1fr 104px; gap: 22px;
+  align-items: start; padding: 24px 0; border-bottom: 1px solid var(--rule-soft);
+  cursor: default;
+}
+.post-row:hover h4 { color: var(--accent); }
+.post-row h4 {
+  margin: 0; font-family: var(--body); font-weight: 500; font-size: 1.28rem;
+  line-height: 1.28; letter-spacing: -.01em; transition: color .18s ease;
+}
+.post-row p { margin: 7px 0 0; color: var(--ink-2); font-size: .96rem; line-height: 1.5; }
+.post-row .thumb { width: 104px; aspect-ratio: 1; border-radius: 6px; }
+@media (max-width: 560px) {
+  .post-row { grid-template-columns: 1fr 76px; gap: 14px; }
+  .post-row .thumb { width: 76px; }
+  .post-row p { display: none; }
+}
+
+/* ---------- tiles ---------- */
+.thumb { display: block; overflow: hidden; }
+.thumb svg { width: 100%; height: 100%; display: block; }
+
+/* ---------- tiers ---------- */
+.tiers { padding: 44px 0 8px; }
+.tier-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+.tier {
+  border: 1px solid var(--rule); border-radius: 10px; padding: 20px;
+  display: flex; flex-direction: column; gap: 10px; background: var(--surface);
+}
+.tier.pick { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.tier h5 {
+  margin: 0; font-family: var(--ui); font-size: .74rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3);
+}
+.tier .price { font-family: var(--display); font-size: 1.7rem; font-weight: 600; letter-spacing: -.02em; }
+.tier .price small { font-family: var(--ui); font-size: .78rem; font-weight: 400; color: var(--ink-3); letter-spacing: 0; }
+.tier ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: .95rem; color: var(--ink-2); }
+.tier li { display: flex; gap: 8px; align-items: flex-start; line-height: 1.4; }
+.tier li svg { flex: none; margin-top: 4px; }
+.tier .btn { margin-top: auto; width: 100%; padding: 10px; }
+
+/* ---------- about ---------- */
+.about { padding: 44px 0; }
+.about-card { display: flex; gap: 18px; align-items: flex-start; }
+.avatar { flex: none; width: 62px; height: 62px; border-radius: 50%; overflow: hidden; }
+.about-card h5 { margin: 0 0 2px; font-family: var(--ui); font-size: .95rem; font-weight: 600; }
+.about-card .handle { font-family: var(--ui); font-size: .78rem; color: var(--ink-3); }
+.about-card p { margin: 10px 0 0; color: var(--ink-2); font-size: .99rem; }
+
+.sub-foot {
+  border-top: 1px solid var(--rule); padding: 26px; text-align: center;
+  font-family: var(--ui); font-size: .74rem; color: var(--ink-3);
+  display: flex; flex-direction: column; gap: 6px;
+}
+
+/* ---------- post screen ---------- */
+.article { padding: 46px 0 20px; }
+.article h2 {
+  margin: 0; font-family: var(--body); font-weight: 500;
+  font-size: clamp(2rem, 5.2vw, 2.7rem); line-height: 1.14;
+  letter-spacing: -.02em; text-wrap: balance;
+}
+.article .dek {
+  margin: 14px 0 0; font-size: 1.16rem; color: var(--ink-2);
+  font-weight: 300; line-height: 1.5; text-wrap: balance;
+}
+.byline { display: flex; align-items: center; gap: 12px; margin: 26px 0 0; }
+.byline .avatar { width: 40px; height: 40px; }
+.byline-text { font-family: var(--ui); font-size: .82rem; line-height: 1.35; }
+.byline-text b { font-weight: 600; }
+.byline-text span { color: var(--ink-3); font-size: .76rem; display: block; }
+
+.actionbar {
+  display: flex; align-items: center; gap: 20px; margin: 22px 0 0;
+  padding: 12px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  font-family: var(--ui); font-size: .8rem; color: var(--ink-2);
+}
+.act { display: flex; align-items: center; gap: 6px; }
+.act svg { flex: none; }
+.actionbar .spacer { margin-left: auto; }
+
+.hero-art { margin: 30px 0 0; border-radius: 8px; aspect-ratio: 16 / 9; }
+.caption { margin: 10px 0 0; font-family: var(--ui); font-size: .74rem; color: var(--ink-3); text-align: center; }
+
+.prose { font-size: 1.115rem; line-height: 1.72; }
+.prose p { margin: 24px 0 0; }
+.prose p.first::first-letter {
+  float: left; font-family: var(--display); font-weight: 600;
+  font-size: 3.3rem; line-height: .82; padding: 5px 9px 0 0; color: var(--accent);
+}
+.prose h3 {
+  margin: 40px 0 0; font-family: var(--body); font-weight: 600;
+  font-size: 1.4rem; letter-spacing: -.01em;
+}
+.prose ol { margin: 22px 0 0; padding: 0; list-style: none; counter-reset: step; display: flex; flex-direction: column; gap: 18px; }
+.prose ol li { counter-increment: step; padding-left: 46px; position: relative; }
+.prose ol li::before {
+  content: counter(step); position: absolute; left: 0; top: 2px;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--accent-soft); color: var(--accent);
+  font-family: var(--ui); font-size: .82rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.prose ol li b { font-weight: 600; }
+
+blockquote {
+  margin: 34px 0 0; padding: 0 0 0 22px; border-left: 3px solid var(--accent);
+  font-size: 1.35rem; line-height: 1.4; font-style: italic; font-weight: 300; color: var(--ink);
+}
+.callout {
+  margin: 32px 0 0; padding: 18px 20px; background: var(--surface-2);
+  border-radius: 8px; font-size: 1rem; line-height: 1.55; color: var(--ink-2);
+}
+.callout b { color: var(--ink); font-weight: 600; }
+
+.paywall {
+  margin: 40px 0 0; padding: 28px 24px; text-align: center;
+  border: 1px solid var(--rule); border-radius: 10px; background: var(--surface-2);
+}
+.paywall h4 { margin: 0; font-family: var(--body); font-weight: 600; font-size: 1.28rem; }
+.paywall p { margin: 8px auto 0; max-width: 40ch; color: var(--ink-2); font-size: .99rem; }
+.paywall .signup { margin-top: 18px; }
+
+.comments { padding: 34px 0 44px; }
+.comment { display: flex; gap: 12px; padding: 16px 0; border-top: 1px solid var(--rule-soft); }
+.comment .avatar { width: 34px; height: 34px; }
+.comment-body { font-size: .99rem; }
+.comment-body b { font-family: var(--ui); font-size: .82rem; font-weight: 600; }
+.comment-body time { font-family: var(--ui); font-size: .74rem; color: var(--ink-3); margin-left: 8px; }
+.comment-body p { margin: 4px 0 0; color: var(--ink-2); line-height: 1.5; }
+
+/* ---------- email screen ---------- */
+.inbox { background: var(--surface-2); padding: 26px; }
+.mailhead {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+  font-family: var(--ui); font-size: .78rem; color: var(--ink-3);
+}
+.mail {
+  max-width: 620px; margin: 0 auto; background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 10px; overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.mail-meta { padding: 18px 24px; border-bottom: 1px solid var(--rule); display: flex; gap: 12px; align-items: flex-start; }
+.mail-meta .avatar { width: 38px; height: 38px; }
+.mail-from { font-family: var(--ui); font-size: .84rem; font-weight: 600; }
+.mail-from span { display: block; font-weight: 400; color: var(--ink-3); font-size: .76rem; }
+.mail-time { margin-left: auto; font-family: var(--ui); font-size: .74rem; color: var(--ink-3); white-space: nowrap; }
+.mail-subject { padding: 22px 24px 0; }
+.mail-subject .kicker {
+  font-family: var(--ui); font-size: .68rem; font-weight: 700; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.mail-subject h3 {
+  margin: 10px 0 0; font-family: var(--body); font-weight: 500;
+  font-size: 1.6rem; line-height: 1.2; letter-spacing: -.015em; text-wrap: balance;
+}
+.mail-subject p { margin: 8px 0 0; color: var(--ink-2); font-size: 1rem; }
+.mail-art { margin: 20px 24px 0; border-radius: 6px; aspect-ratio: 16 / 7; }
+.mail-body { padding: 4px 24px 0; font-size: 1.02rem; line-height: 1.65; color: var(--ink-2); }
+.mail-body p { margin: 18px 0 0; }
+.mail-cta { padding: 22px 24px 26px; }
+.mail-cta .btn { width: 100%; padding: 12px; }
+.mail-foot {
+  padding: 16px 24px; border-top: 1px solid var(--rule); background: var(--surface-2);
+  font-family: var(--ui); font-size: .7rem; color: var(--ink-3); text-align: center; line-height: 1.7;
+}
+.mail-foot u { text-decoration: underline; }
+
+/* ---------- swap notes ---------- */
+.notes { margin-top: 64px; }
+.notes h2 {
+  margin: 0 0 6px; font-family: var(--display); font-weight: 600;
+  font-size: 1.65rem; letter-spacing: -.02em;
+}
+.notes .sub-note { margin: 0 0 24px; color: var(--ink-2); max-width: 56ch; }
+.note-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+.note {
+  border: 1px solid var(--rule); border-left: 3px solid var(--accent);
+  border-radius: 8px; padding: 16px 18px; background: var(--surface);
+}
+.note h6 {
+  margin: 0 0 6px; font-family: var(--ui); font-size: .8rem; font-weight: 600; letter-spacing: .01em;
+}
+.note p { margin: 0; font-size: .95rem; color: var(--ink-2); line-height: 1.5; }
+.note code {
+  font-family: var(--ui); font-size: .88em; background: var(--surface-2);
+  padding: 1px 5px; border-radius: 4px; color: var(--ink);
+}
+
+.colophon {
+  margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule);
+  font-family: var(--ui); font-size: .76rem; color: var(--ink-3);
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="leaf-drop" viewBox="0 0 64 64">
+      <path d="M32 5C50 17 52 42 32 59 12 42 14 17 32 5Z" fill="currentColor"/>
+      <path d="M32 10V55" stroke="var(--tile)" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>
+      <path d="M32 22 42 17M32 32 44 27M32 42 42 38M32 22 22 17M32 32 20 27M32 42 22 38" stroke="var(--tile)" stroke-width="1.2" stroke-linecap="round" opacity=".55" fill="none"/>
+    </symbol>
+    <symbol id="leaf-heart" viewBox="0 0 64 64">
+      <path d="M32 59C10 43 7 21 20 12c6-4 10 0 12 5 2-5 6-9 12-5 13 9 10 31-12 47Z" fill="currentColor"/>
+      <path d="M32 54V19" stroke="var(--tile)" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
+    </symbol>
+    <symbol id="leaf-split" viewBox="0 0 64 64">
+      <path d="M32 4C52 16 54 43 32 60 10 43 12 16 32 4Z" fill="currentColor"/>
+      <path d="M13 22 27 25 13 28ZM13 34 27 37 13 40ZM15 45 27 47 16 50ZM51 22 37 25 51 28ZM51 34 37 37 51 40ZM49 45 37 47 48 50Z" fill="var(--tile)"/>
+      <path d="M32 12V56" stroke="var(--tile)" stroke-width="1.6" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="jar" viewBox="0 0 64 64">
+      <path d="M32 34V16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M32 22C26 22 22 18 22 13c6 0 10 4 10 9Z" fill="currentColor"/>
+      <path d="M32 27c6 0 10-4 10-9-6 0-10 4-10 9Z" fill="currentColor"/>
+      <path d="M23 33h18v18a5 5 0 0 1-5 5h-8a5 5 0 0 1-5-5Z" fill="currentColor" opacity=".28"/>
+      <path d="M23 33h18v18a5 5 0 0 1-5 5h-8a5 5 0 0 1-5-5Z" stroke="currentColor" stroke-width="1.8" fill="none"/>
+      <path d="M23 42h18" stroke="currentColor" stroke-width="1.4" opacity=".7"/>
+    </symbol>
+    <symbol id="sprout" viewBox="0 0 64 64">
+      <path d="M32 54V30" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <path d="M32 36c-8 0-14-6-14-14 8 0 14 6 14 14Z" fill="currentColor"/>
+      <path d="M32 42c8 0 14-6 14-14-8 0-14 6-14 14Z" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-heart" viewBox="0 0 16 16">
+      <path d="M8 13.8S2.4 10.2 2.4 6.7A3 3 0 0 1 8 5.1a3 3 0 0 1 5.6 1.6c0 3.5-5.6 7.1-5.6 7.1Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-comment" viewBox="0 0 16 16">
+      <path d="M2.4 3.4h11.2v7.5H7.2l-3.1 2.4v-2.4H2.4Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-share" viewBox="0 0 16 16">
+      <path d="M8 10.4V2.2m0 0L5.2 5M8 2.2 10.8 5M3 9v4.4h10V9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 16 16">
+      <path d="M3.2 8.4 6.4 11.6l6.4-7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="page">
+
+  <header class="brief">
+    <p class="eyebrow">Substack mock-up &middot; @theplantrescuer</p>
+    <h1>The Plant Rescuer</h1>
+    <p class="lede">Three views of the same publication: the page a new reader lands on, a post as it reads on the site, and the way it arrives in a subscriber's inbox. Everything here is a placeholder you can talk back to &mdash; names, prices and copy are all meant to be argued with.</p>
+    <div class="tabs" role="tablist" aria-label="Mock-up views">
+      <button class="tab" role="tab" id="tab-home" aria-controls="screen-home" aria-selected="true">Publication page</button>
+      <button class="tab" role="tab" id="tab-post" aria-controls="screen-post" aria-selected="false">A post</button>
+      <button class="tab" role="tab" id="tab-email" aria-controls="screen-email" aria-selected="false">In the inbox</button>
+    </div>
+  </header>
+
+  <div class="viewport">
+    <div class="chrome">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="urlbar" id="urlbar">theplantrescuer.substack.com</div>
+      <div class="chrome-spacer"></div>
+    </div>
+
+    <!-- ============ SCREEN 1: PUBLICATION PAGE ============ -->
+    <section class="screen is-live" id="screen-home" role="tabpanel" aria-labelledby="tab-home">
+      <div class="sub">
+
+        <div class="topbar">
+          <div class="wordmark">
+            <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="var(--accent-soft)"/><g color="var(--accent)"><use href="#sprout" x="10" y="10" width="44" height="44"/></g></svg>
+            The Plant Rescuer
+          </div>
+          <div class="topbar-links">
+            <span>Archive</span><span>Plant Clinic</span><span>About</span>
+          </div>
+          <button class="btn">Subscribe</button>
+        </div>
+
+        <div class="masthead">
+          <svg class="mark" width="58" height="58" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="32" fill="var(--accent-soft)"/>
+            <g color="var(--accent)"><use href="#sprout" x="8" y="8" width="48" height="48"/></g>
+          </svg>
+          <h2>The Plant Rescuer</h2>
+          <p class="tagline">Notes from the plants everybody else gave up on.</p>
+          <p class="mast-meta">By @theplantrescuer &nbsp;&middot;&nbsp; Over 4,000 subscribers</p>
+
+          <form class="signup" id="signup" novalidate>
+            <label for="email" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+            <input id="email" type="email" placeholder="Type your email&hellip;" autocomplete="off">
+            <button class="btn" type="submit">Subscribe</button>
+          </form>
+          <p class="signup-note" id="signup-note">A free rescue every other Thursday. Paid members get the Plant Clinic.</p>
+        </div>
+
+        <nav class="subnav">
+          <b>Home</b><span>Rescue Log</span><span>Plant Clinic</span><span>Archive</span><span>About</span>
+        </nav>
+
+        <div class="wrap feed">
+          <p class="section-label">Latest</p>
+
+          <article class="featured">
+            <span class="thumb" style="--tile:var(--tile-a)" aria-hidden="true">
+              <svg viewBox="0 0 320 160" preserveAspectRatio="xMidYMid slice">
+                <rect width="320" height="160" fill="var(--tile)"/>
+                <g color="var(--leaf-a)">
+                  <use href="#leaf-split" x="118" y="24" width="112" height="112"/>
+                  <use href="#leaf-drop" x="52" y="46" width="72" height="72" transform="rotate(-24 88 82)" opacity=".55"/>
+                  <use href="#leaf-heart" x="206" y="56" width="64" height="64" transform="rotate(20 238 88)" opacity=".45"/>
+                  <use href="#leaf-drop" x="12" y="86" width="52" height="52" transform="rotate(-46 38 112)" opacity=".3"/>
+                  <use href="#leaf-heart" x="264" y="16" width="46" height="46" transform="rotate(34 287 39)" opacity=".28"/>
+                </g>
+              </svg>
+            </span>
+            <div class="meta" style="margin-top:18px"><span class="tag" style="margin:0">Rescue field guide</span></div>
+            <h3>The 48-hour triage</h3>
+            <p>What to do in the first two days after you bring home a plant that everyone else had written off &mdash; and the one thing almost everybody does that finishes it off.</p>
+            <div class="meta">
+              <span>Aug 21</span><i class="dot"></i><span>9 min read</span><i class="dot"></i>
+              <span style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 16 16"><use href="#i-heart" width="16" height="16"/></svg> 214</span>
+              <i class="dot"></i><span style="display:inline-flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 16 16"><use href="#i-comment" width="16" height="16"/></svg> 38</span>
+            </div>
+          </article>
+
+          <hr class="rule">
+
+          <article class="post-row">
+            <div>
+              <h4>Eleven clearance plants, six weeks later</h4>
+              <p>I took home everything on the reduced trolley at the garden centre. Nine made it, one is undecided, and the calathea has strong opinions. The full log, stage by stage.</p>
+              <div class="meta"><span>Aug 7</span><i class="dot"></i><span>12 min read</span></div>
+            </div>
+            <span class="thumb" style="--tile:var(--tile-b)" aria-hidden="true">
+              <svg viewBox="0 0 120 120" preserveAspectRatio="xMidYMid slice">
+                <rect width="120" height="120" fill="var(--tile)"/>
+                <g color="var(--leaf-b)">
+                  <use href="#leaf-drop" x="30" y="18" width="60" height="60"/>
+                  <use href="#leaf-drop" x="14" y="52" width="46" height="46" transform="rotate(-38 37 75)" opacity=".55"/>
+                  <use href="#leaf-drop" x="62" y="56" width="44" height="44" transform="rotate(32 84 78)" opacity=".45"/>
+                </g>
+              </svg>
+            </span>
+          </article>
+
+          <article class="post-row">
+            <div>
+              <h4>Root rot is not a death sentence</h4>
+              <p>How to tell a rotten root from a dormant one by feel, and the rinse-and-repot that saves most plants people have already binned in their heads.</p>
+              <div class="meta"><span>Jul 24</span><i class="dot"></i><span>7 min read</span></div>
+            </div>
+            <span class="thumb" style="--tile:var(--tile-c)" aria-hidden="true">
+              <svg viewBox="0 0 120 120" preserveAspectRatio="xMidYMid slice">
+                <rect width="120" height="120" fill="var(--tile)"/>
+                <g color="var(--leaf-c)"><use href="#jar" x="18" y="18" width="84" height="84"/></g>
+              </svg>
+            </span>
+          </article>
+
+          <article class="post-row">
+            <div>
+              <div class="meta" style="margin:0 0 8px"><span class="tag green" style="margin:0">Plant clinic &middot; Members</span></div>
+              <h4>How to read a leaf</h4>
+              <p>Yellow, brown, crisp, limp, spotted, or gone translucent &mdash; a diagnostic chart for what the plant is actually telling you, and what it isn't.</p>
+              <div class="meta"><span>Jul 10</span><i class="dot"></i><span>15 min read</span></div>
+            </div>
+            <span class="thumb" style="--tile:var(--tile-d)" aria-hidden="true">
+              <svg viewBox="0 0 120 120" preserveAspectRatio="xMidYMid slice">
+                <rect width="120" height="120" fill="var(--tile)"/>
+                <g color="var(--leaf-d)">
+                  <use href="#leaf-heart" x="26" y="20" width="68" height="68"/>
+                  <use href="#leaf-heart" x="60" y="58" width="46" height="46" transform="rotate(24 83 81)" opacity=".5"/>
+                </g>
+              </svg>
+            </span>
+          </article>
+
+          <article class="post-row" style="border-bottom:0">
+            <div>
+              <h4>One pothos, nine plants</h4>
+              <p>A half-dead trailing pothos is the cheapest plant maths there is. Where to cut, what to cut with, and how long to leave it in water before it sulks.</p>
+              <div class="meta"><span>Jun 26</span><i class="dot"></i><span>6 min read</span></div>
+            </div>
+            <span class="thumb" style="--tile:var(--tile-a)" aria-hidden="true">
+              <svg viewBox="0 0 120 120" preserveAspectRatio="xMidYMid slice">
+                <rect width="120" height="120" fill="var(--tile)"/>
+                <g color="var(--leaf-a)">
+                  <use href="#leaf-split" x="24" y="22" width="72" height="72"/>
+                  <use href="#leaf-drop" x="66" y="60" width="40" height="40" transform="rotate(28 86 80)" opacity=".45"/>
+                </g>
+              </svg>
+            </span>
+          </article>
+        </div>
+
+        <div class="wrap tiers">
+          <p class="section-label">Subscribe</p>
+          <div class="tier-grid">
+            <div class="tier">
+              <h5>Free</h5>
+              <div class="price">$0</div>
+              <ul>
+                <li><svg width="14" height="14" viewBox="0 0 16 16" color="var(--accent)"><use href="#i-check" width="16" height="16"/></svg> A rescue post every other Thursday</li>
+                <li><svg width="14" height="14" viewBox="0 0 16 16" color="var(--accent)"><use href="#i-check" width="16" height="16"/></svg> The full archive of free posts</li>
+              </ul>
+              <button class="btn btn-ghost">Subscribe free</button>
+            </div>
+            <div class="tier pick">
+              <h5>Monthly</h5>
+              <div class="price">$6 <small>/ month</small></div>
+              <ul>
+                <li><svg width="14" height="14" viewBox="0 0 16 16" color="var(--accent)"><use href="#i-check" width="16" height="16"/></svg> Everything in free</li>
+                <li><svg width="14" height="14" viewBox="0 0 16 16" color="var(--accent)"><use href="#i-check" width="16" height="16"/></svg> The Plant Clinic &mdash; send me a photo, I'll diagnose it</li>
+                <li><svg width="14" height="14" viewBox="0 0 16 16" color="var(--accent)"><use href="#i-check" width="16" height="16"/></svg> Monthly members' thread</li>
+              </ul>
+              <button class="btn">Subscribe</button>
+            </div>
+            <div class="tier">
+              <h5>Annual</h5>
+              <div class="price">$50 <small>/ year</small></div>
+              <ul>
+                <li><svg width="14" height="14" viewBox="0 0 16 16" color="var(--accent)"><use href="#i-check" width="16" height="16"/></svg> Everything monthly, two months free</li>
+                <li><svg width="14" height="14" viewBox="0 0 16 16" color="var(--accent)"><use href="#i-check" width="16" height="16"/></svg> A cutting from the rescue shelf, posted to you</li>
+              </ul>
+              <button class="btn btn-ghost">Subscribe</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wrap about">
+          <p class="section-label">Who writes this</p>
+          <div class="about-card">
+            <span class="avatar" aria-hidden="true">
+              <svg viewBox="0 0 64 64" width="100%" height="100%">
+                <rect width="64" height="64" fill="var(--accent-soft)"/>
+                <g color="var(--accent)"><use href="#sprout" x="8" y="8" width="48" height="48"/></g>
+              </svg>
+            </span>
+            <div>
+              <h5>The Plant Rescuer</h5>
+              <div class="handle">@theplantrescuer</div>
+              <p>I bring home the plants shops are about to throw out, and I write down what happens next. The before-and-afters live on Instagram; this is where the whole story goes &mdash; the method, the mistakes, and the ones that didn't make it.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-foot">
+          <div>&copy; 2026 The Plant Rescuer &middot; Privacy &middot; Terms &middot; Collection notice</div>
+          <div>Publish on Substack</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 2: A POST ============ -->
+    <section class="screen" id="screen-post" role="tabpanel" aria-labelledby="tab-post" hidden>
+      <div class="sub">
+        <div class="topbar">
+          <div class="wordmark">
+            <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="var(--accent-soft)"/><g color="var(--accent)"><use href="#sprout" x="10" y="10" width="44" height="44"/></g></svg>
+            The Plant Rescuer
+          </div>
+          <div class="topbar-links"><span>Archive</span><span>Plant Clinic</span><span>About</span></div>
+          <button class="btn">Subscribe</button>
+        </div>
+
+        <div class="wrap article">
+          <span class="tag">Rescue field guide</span>
+          <h2>The 48-hour triage</h2>
+          <p class="dek">What to do in the first two days after you bring home a plant that everyone else had written off &mdash; and the one thing almost everybody does that finishes it off.</p>
+
+          <div class="byline">
+            <span class="avatar" aria-hidden="true">
+              <svg viewBox="0 0 64 64" width="100%" height="100%">
+                <rect width="64" height="64" fill="var(--accent-soft)"/>
+                <g color="var(--accent)"><use href="#sprout" x="8" y="8" width="48" height="48"/></g>
+              </svg>
+            </span>
+            <div class="byline-text">
+              <b>The Plant Rescuer</b>
+              <span>Aug 21, 2026 &middot; 9 min read</span>
+            </div>
+          </div>
+
+          <div class="actionbar">
+            <span class="act"><svg width="15" height="15" viewBox="0 0 16 16"><use href="#i-heart" width="16" height="16"/></svg> 214</span>
+            <span class="act"><svg width="15" height="15" viewBox="0 0 16 16"><use href="#i-comment" width="16" height="16"/></svg> 38</span>
+            <span class="act"><svg width="15" height="15" viewBox="0 0 16 16"><use href="#i-share" width="16" height="16"/></svg> Share</span>
+            <span class="spacer"></span>
+            <button class="btn btn-ghost" style="padding:6px 12px">Restack</button>
+          </div>
+
+          <span class="thumb hero-art" style="--tile:var(--tile-a)" aria-hidden="true">
+            <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
+              <rect width="320" height="180" fill="var(--tile)"/>
+              <g color="var(--leaf-a)">
+                <use href="#leaf-split" x="112" y="34" width="120" height="120"/>
+                <use href="#leaf-drop" x="40" y="52" width="80" height="80" transform="rotate(-28 80 92)" opacity=".5"/>
+                <use href="#leaf-heart" x="208" y="66" width="70" height="70" transform="rotate(22 243 101)" opacity=".42"/>
+                <use href="#jar" x="256" y="104" width="56" height="56" opacity=".3"/>
+                <use href="#leaf-drop" x="6" y="106" width="56" height="56" transform="rotate(-52 34 134)" opacity=".26"/>
+              </g>
+            </svg>
+          </span>
+          <p class="caption">The trolley outside the back door, 4pm on a Tuesday. Everything on it was 50p.</p>
+
+          <div class="prose">
+            <p class="first">There is a trolley outside the back door of almost every garden centre, and nobody wants you to look at it. It's where the stock goes when it stops being sellable: the dropped leaves, the white crust on the soil, the pot that's been sitting in its own drip tray for a fortnight. Last Tuesday there were eleven plants on ours. I paid four pounds for the lot.</p>
+
+            <p>Most of them will be fine. That's the part people find hard to believe. A plant that looks finished is usually a plant that has been kept alive badly for a long time, and the damage you can see is weeks old &mdash; it isn't happening now. What you do in the first forty-eight hours decides whether that stops being true.</p>
+
+            <h3>Do this, in this order</h3>
+            <ol>
+              <li><b>Put it somewhere on its own.</b> Not with your other plants, not yet. Shop stock arrives with company &mdash; scale, thrips, fungus gnats &mdash; and two weeks of quarantine costs you nothing if you're wrong.</li>
+              <li><b>Take it out of the pot.</b> All the way out. Everything you need to know is under the soil, and no amount of looking at the leaves will tell you instead.</li>
+              <li><b>Read the roots with your fingers.</b> Healthy roots are firm and pale and they resist you. Rotten ones slide out of their own skin and smell like a pond. Dormant ones are dry and stiff and do neither.</li>
+              <li><b>Cut what's actually dead.</b> Rotten root, back to firm tissue. Leaves that have gone fully brown and crisp. Leave anything still holding any green &mdash; the plant is feeding on it.</li>
+              <li><b>Repot into dry mix, one size down.</b> Not up. A weakened root ball in a big pot sits in wet soil it can't drink, and that's the fastest way to lose one you'd already saved.</li>
+              <li><b>Then leave it alone.</b> Bright shade, no fertiliser, no misting, one light drink. Two weeks of nothing. This is the hard bit.</li>
+            </ol>
+
+            <blockquote>Most plants people bring me aren't dying of neglect. They're dying of a fortnight of enthusiastic care applied to the wrong problem.</blockquote>
+
+            <p>Step six is where the rescues are lost. A plant that has been drowning does not want feeding, and a plant with a third of its roots cut off cannot use fertiliser &mdash; it just sits in the soil and burns what's left. The instinct to intervene is the thing you are actually rescuing it from.</p>
+
+            <div class="callout">
+              <b>A note on the ones that don't make it.</b> Roughly one in five. If the stem is soft where it meets the soil, that's rot in the crown and there's no route back from it &mdash; take a cutting from the healthiest growth and let the rest go. I'll take the whole propagation method through next week's post.
+            </div>
+          </div>
+
+          <div class="paywall">
+            <h4>The rest of this one is for members</h4>
+            <p>Including the triage chart, the repotting mix I use for weakened roots, and photographs of all eleven plants at week one and week six.</p>
+            <form class="signup">
+              <label style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+              <input type="email" placeholder="Type your email&hellip;" autocomplete="off">
+              <button class="btn" type="button">Subscribe</button>
+            </form>
+            <p class="signup-note">$6 a month &middot; Cancel any time</p>
+          </div>
+        </div>
+
+        <div class="wrap comments">
+          <p class="section-label">38 comments</p>
+          <div class="comment">
+            <span class="avatar" aria-hidden="true"><svg viewBox="0 0 64 64" width="100%" height="100%" style="--tile:var(--tile-b)"><rect width="64" height="64" fill="var(--tile-b)"/><g color="var(--leaf-b)"><use href="#leaf-drop" x="14" y="14" width="36" height="36"/></g></svg></span>
+            <div class="comment-body">
+              <b>Marguerite</b><time>2d</time>
+              <p>The pot-size thing. I have been potting every rescue straight up into something enormous for four years and wondering why half of them go off. Genuinely annoyed at myself.</p>
+            </div>
+          </div>
+          <div class="comment">
+            <span class="avatar" aria-hidden="true"><svg viewBox="0 0 64 64" width="100%" height="100%" style="--tile:var(--tile-d)"><rect width="64" height="64" fill="var(--tile-d)"/><g color="var(--leaf-d)"><use href="#leaf-heart" x="14" y="14" width="36" height="36"/></g></svg></span>
+            <div class="comment-body">
+              <b>Sam O.</b><time>1d</time>
+              <p>Took home a fiddle leaf fig from a skip in May on the strength of one of your reels. Six new leaves. Please keep doing this.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-foot">
+          <div>&copy; 2026 The Plant Rescuer &middot; Privacy &middot; Terms &middot; Collection notice</div>
+          <div>Publish on Substack</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCREEN 3: IN THE INBOX ============ -->
+    <section class="screen" id="screen-email" role="tabpanel" aria-labelledby="tab-email" hidden>
+      <div class="inbox">
+        <div class="mailhead">Inbox &middot; Thursday, 7:02 am</div>
+        <div class="mail">
+          <div class="mail-meta">
+            <span class="avatar" aria-hidden="true">
+              <svg viewBox="0 0 64 64" width="100%" height="100%">
+                <rect width="64" height="64" fill="var(--accent-soft)"/>
+                <g color="var(--accent)"><use href="#sprout" x="8" y="8" width="48" height="48"/></g>
+              </svg>
+            </span>
+            <div class="mail-from">
+              The Plant Rescuer
+              <span>theplantrescuer@substack.com &nbsp;to&nbsp; me</span>
+            </div>
+            <div class="mail-time">7:02 am</div>
+          </div>
+
+          <div class="mail-subject">
+            <div class="kicker">The Plant Rescuer &middot; No. 14</div>
+            <h3>The 48-hour triage</h3>
+            <p>Four pounds, eleven written-off plants, and the two days that decide all of them.</p>
+          </div>
+
+          <span class="thumb mail-art" style="--tile:var(--tile-a)" aria-hidden="true">
+            <svg viewBox="0 0 320 140" preserveAspectRatio="xMidYMid slice">
+              <rect width="320" height="140" fill="var(--tile)"/>
+              <g color="var(--leaf-a)">
+                <use href="#leaf-split" x="122" y="18" width="98" height="98"/>
+                <use href="#leaf-drop" x="56" y="40" width="66" height="66" transform="rotate(-26 89 73)" opacity=".5"/>
+                <use href="#leaf-heart" x="204" y="46" width="58" height="58" transform="rotate(22 233 75)" opacity=".4"/>
+              </g>
+            </svg>
+          </span>
+
+          <div class="mail-body">
+            <p>There is a trolley outside the back door of almost every garden centre, and nobody wants you to look at it. Last Tuesday there were eleven plants on ours. I paid four pounds for the lot.</p>
+            <p>Most of them will be fine &mdash; and the reason has almost nothing to do with what you do in week three. It's the first forty-eight hours&hellip;</p>
+          </div>
+
+          <div class="mail-cta">
+            <button class="btn" type="button">Read in the app</button>
+          </div>
+
+          <div class="mail-foot">
+            You're receiving this because you subscribed to The Plant Rescuer.<br>
+            <u>Unsubscribe</u> &middot; <u>View in browser</u> &middot; <u>Update your settings</u>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="notes">
+    <h2>Before it goes live</h2>
+    <p class="sub-note">Everything in the mock-up is stand-in content. These are the five things worth deciding for real &mdash; the rest is Substack's own furniture and looks after itself.</p>
+    <div class="note-grid">
+      <div class="note">
+        <h6>The name and the line under it</h6>
+        <p>&ldquo;Notes from the plants everybody else gave up on&rdquo; is a guess. The tagline does the most work of anything on the page &mdash; it's what a new reader reads before deciding.</p>
+      </div>
+      <div class="note">
+        <h6>Real photographs</h6>
+        <p>The leaf tiles are placeholders. Before-and-afters are the whole draw here, so the first thing to swap in is a genuine trolley shot and a set of week-one / week-six pairs.</p>
+      </div>
+      <div class="note">
+        <h6>Byline and numbers</h6>
+        <p>It's currently written by &ldquo;@theplantrescuer&rdquo; with an invented subscriber count. Substack hides the count until it flatters you &mdash; worth leaving off at the start.</p>
+      </div>
+      <div class="note">
+        <h6>Prices and currency</h6>
+        <p>Shown as <code>$6</code> monthly / <code>$50</code> annual. Substack takes 10% plus Stripe fees. The posted cutting on the annual tier is a nice hook but it's a real postage commitment.</p>
+      </div>
+      <div class="note">
+        <h6>What's free and what isn't</h6>
+        <p>The split here is: rescue write-ups free, the Plant Clinic paid. That's the decision that shapes the publication &mdash; worth running free-only for a few months first.</p>
+      </div>
+      <div class="note">
+        <h6>Publication schedule</h6>
+        <p>Every other Thursday, stated on the page. A cadence you can hold beats a fast one you can't, and it's the promise readers actually judge you on.</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="colophon">Mock-up only &mdash; not affiliated with Substack. Screens approximate Substack's publication, post and email layouts.</p>
+</div>
+
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var urls = {
+    'screen-home': 'theplantrescuer.substack.com',
+    'screen-post': 'theplantrescuer.substack.com/p/the-48-hour-triage',
+    'screen-email': 'mail — The Plant Rescuer'
+  };
+  var urlbar = document.getElementById('urlbar');
+
+  function show(tab) {
+    tabs.forEach(function (t) {
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      panel.hidden = !on;
+      panel.classList.toggle('is-live', on);
+    });
+    urlbar.textContent = urls[tab.getAttribute('aria-controls')] || '';
+  }
+
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { show(tab); });
+    tab.addEventListener('keydown', function (e) {
+      var next = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : -1;
+      if (next < 0 || next >= tabs.length) return;
+      e.preventDefault();
+      tabs[next].focus();
+      show(tabs[next]);
+    });
+  });
+
+  var form = document.getElementById('signup');
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var note = document.getElementById('signup-note');
+      form.outerHTML = '<p class="signup-done">Welcome to The Plant Rescuer. Your first rescue lands Thursday.</p>';
+      if (note) note.textContent = 'Check your inbox to confirm — it sometimes lands in Promotions.';
+    });
+  }
+})();
+</script>
